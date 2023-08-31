@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html data-ng-app="favoriteApp" lang="fr"> <!--fait le lien entre html et js-->
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minimal Front Sample</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="libs/bulma/bulma.min.css">
+    <script src="libs/angular/angular.min.js"></script>
+    <script src="js/favorite.js"></script>
+</head>
+
+<body data-ng-controller="FavoritesController"> <!--lier avec js il faut conserver le meme nom-->
+
+    <section class="section">
+        <div class="container">
+
+            <h1 class="title">Favorite Manager</h1>
+
+            <div class="box" data-ng-if="mode == 'view'">
+                <h2 class="title">Main menu</h2>
+                <div class="columns">
+                    <div class="column">
+                        <div class="select is-fullwidth">
+
+                            <select data-ng-model="categoryFilter"
+                                data-ng-options="category.id as category.label for category in categories"
+                                data-ng-change="filterFavorites(categoryFilter)">
+                            </select>
+                        </div>
+                            <div class="select is-fullwidth mt-5">
+                                <select 
+                                data-ng-model="selectedSortCriteria" 
+                                data-ng-options="criteria.value as criteria.label for criteria in sortCriteriaOptions"
+                                data-ng-change="sortFavorites(selectedSortCriteria)">
+                                </select>
+                            </div>
+
+                       
+                    </div>
+                    <div class="column  is-narrow">
+                        <button class="button is-primary" data-ng-click="setMode('creation')">Add item</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box" data-ng-if="mode == 'creation'">
+                <div class="columns">
+                    <div class="column">
+                        <h2 class="title">Definition of a new Favorite</h2>
+                        <form name="form" class="form-validation" novalidate role="form">
+                            <div class="field">
+                                <label class="label">Link *</label>
+                                <div class="control">
+                                    <input type="text" data-ng-model="favorite.link" class="input"
+                                        required="required" />
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label class="label">Category *</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select data-ng-model="favorite.category"
+                                            data-ng-options="item.id as item.label for item in realCategories"
+                                            required="required"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="button is-primary" type="button" data-ng-disabled="form.$invalid"
+                                data-ng-click="validate()">Add</button>
+                            <button class="button is-default" type="button" data-ng-click="cancel()">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="columns">
+                    <div class="column">
+                        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" ng-model="selectAll" ng-change="toggleSelectAll()"></th>
+                                    <th class="is-narrow">ID</th>
+                                    <th>Category</th>
+                                    <th>Link</th>
+                                    <th class="is-narrow">Last Update</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-if="favorites.length == 0">
+                                    <td colspan="4">No data !</td>
+                                </tr>
+                                <tr data-ng-repeat="f in favorites | orderBy: sortCriteria">
+                                    <td><input type="checkbox" ng-model="f.selected" ng-change="updateSelection(f)">
+                                    </td>
+                                    <td>{{ f.id }}</td>
+                                    <td>{{ f.category.label }}</td>
+                                    <td><a data-ng-href="f.link" target="_blank">{{ f.link }}</a></td>
+                                    <td>{{ f.update | date: 'yyyy-MM-dd' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" id="deleteBtn">
+                    <button class="btn btn-danger" ng-disabled="idsToDelete.length === 0"
+                        ng-click="deleteSelected()">Delete Selected Favories</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
