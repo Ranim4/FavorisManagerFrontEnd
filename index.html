@@ -25,8 +25,10 @@
 
             <div class="box" data-ng-if="mode == 'view'">
                 <h2 class="title">Main menu</h2>
-                <h1>{{idsToDelete.length}} items selected &emsp;&emsp;&emsp;&emsp;&emsp; {{favorites.length}} items
+                <h1 data-ng-if="idsToDelete.length === 1"><input type="checkbox" checked>&nbsp;{{idsToDelete.length}} item selected &emsp;&emsp;&emsp;&emsp;&emsp; {{favorites.length}} items
                     total</h1>
+                    <h1 data-ng-if="idsToDelete.length > 1 || idsToDelete.length === 0"><input type="checkbox" checked>&nbsp;{{idsToDelete.length}} items selected &emsp;&emsp;&emsp;&emsp;&emsp; {{favorites.length}} items
+                        total</h1>
 
                 <div class="columns">
                     <div class="column">
@@ -84,7 +86,7 @@
                                 </div>
                             </div>
                             
-                            <button class="button is-primary" type="button" data-ng-disabled="form.$invalid"
+                            <button class="button is-primary" style="text-align: center;" type="button" data-ng-disabled="form.$invalid"
                                 data-ng-click="validate(item.id, favorite.link)">Add</button>
                                 
                             <button class="button is-default" type="button" data-ng-click="cancel()">Cancel</button>
